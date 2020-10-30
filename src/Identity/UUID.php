@@ -2,28 +2,31 @@
 
 namespace ValueObjects\Identity;
 
+use Ramsey\Uuid\Validator\GenericValidator;
 use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Util\Util;
 use ValueObjects\ValueObjectInterface;
 use Ramsey\Uuid\Uuid as BaseUuid;
+use function func_get_arg;
+use function preg_match;
+use function strval;
 
 class UUID extends StringLiteral
 {
-    /** @var BaseUuid */
-    protected $value;
+    protected string $value;
 
     /**
-     * @param  string                                                 $uuid
+     * @param string $uuid
+     *
      * @return UUID
-     * @throws \ValueObjects\Exception\InvalidNativeArgumentException
+     * @throws InvalidNativeArgumentException
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
-        $uuid_str = \func_get_arg(0);
-        $uuid     = new static($uuid_str);
+        $uuid_str = func_get_arg(0);
 
-        return $uuid;
+        return new static($uuid_str);
     }
 
     /**
@@ -31,38 +34,39 @@ class UUID extends StringLiteral
      *
      * @return string
      */
-    public static function generateAsString()
+    public static function generateAsString(): string
     {
-        $uuid       = new static();
-        $uuidString = $uuid->toNative();
+        $uuid = new static();
 
-        return $uuidString;
+        return $uuid->toNative();
     }
 
-    public function __construct($value = null)
+    public function __construct(string $value = null)
     {
         $uuid_str = BaseUuid::uuid4();
 
         if (null !== $value) {
-            $pattern = '/'.BaseUuid::VALID_PATTERN.'/';
+            $genericValidator = new GenericValidator();
+            $pattern = '/' . $genericValidator->getPattern() . '/';
 
-            if (! \preg_match($pattern, $value)) {
-                throw new InvalidNativeArgumentException($value, array('UUID string'));
+            if (! preg_match($pattern, $value)) {
+                throw new InvalidNativeArgumentException($value, ['UUID string']);
             }
 
             $uuid_str = $value;
         }
 
-        $this->value = \strval($uuid_str);
+        parent::__construct(strval($uuid_str));
     }
 
     /**
      * Tells whether two UUID are equal by comparing their values
      *
-     * @param  UUID $uuid
+     * @param UUID $uuid
+     *
      * @return bool
      */
-    public function sameValueAs(ValueObjectInterface $uuid)
+    public function sameValueAs(ValueObjectInterface $uuid): bool
     {
         if (false === Util::classEquals($this, $uuid)) {
             return false;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Climate;
 
 use ValueObjects\Number\Natural;
@@ -17,7 +19,7 @@ class RelativeHumidity extends Natural
      * @param int $value
      * @return RelativeHumidity
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
         $value = func_get_arg(0);
 
@@ -29,7 +31,7 @@ class RelativeHumidity extends Natural
      *
      * @param int $value
      */
-    public function __construct($value)
+    public function __construct(int $value)
     {
         $options = array(
             'options' => array('min_range' => self::MIN, 'max_range' => self::MAX)

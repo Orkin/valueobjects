@@ -2,25 +2,25 @@
 
 namespace ValueObjects\Tests\Identity;
 
+use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Identity\MacAddress;
+use ValueObjects\Tests\TestCase;
 
-final class MacAddressTest extends \PHPUnit_Framework_TestCase
+final class MacAddressTest extends TestCase
 {
-    /**
-     * @expectedException ValueObjects\Exception\InvalidNativeArgumentException
-     * @expectedExceptionMessage Argument "281474976710656" is invalid. Allowed types for argument are "mac address (<= 281,474,976,710,655)".
-     */
     public function testTooBigNativeArgument()
     {
+        $this->expectException(InvalidNativeArgumentException::class);
+        $this->expectExceptionMessage(
+            "Argument \"281474976710656\" is invalid. Allowed types for argument are \"mac address (<= 281,474,976,710,655)\"."
+        );
         new MacAddress(pow(2, 48));
     }
 
-    /**
-     * @expectedException ValueObjects\Exception\InvalidNativeArgumentException
-     * @expectedExceptionMessage Argument "-1" is invalid. Allowed types for argument are "int (>=0)".
-     */
     public function testNegativeNativeArgument()
     {
+        $this->expectException(InvalidNativeArgumentException::class);
+        $this->expectExceptionMessage("Argument \"-1\" is invalid. Allowed types for argument are \"int (>=0)\".");
         new MacAddress(-1);
     }
 
@@ -48,15 +48,15 @@ final class MacAddressTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('ValueObjects\Identity\MacAddress', $macAddress);
     }
 
-    /** @expectedException ValueObjects\Exception\InvalidNativeArgumentException */
     public function testInvalidMacAddressWithBothDashAndColon()
     {
+        $this->expectException(InvalidNativeArgumentException::class);
         MacAddress::fromString('1a:2B-3c:4D-5e');
     }
 
-    /** @expectedException ValueObjects\Exception\InvalidNativeArgumentException */
     public function testInvalidMacAddressWithWrongLength()
     {
+        $this->expectException(InvalidNativeArgumentException::class);
         MacAddress::fromString('1a-2B-3c-4D');
     }
 

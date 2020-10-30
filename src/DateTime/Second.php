@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\DateTime;
 
 use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Number\Natural;
+use function intval;
 
 class Second extends Natural
 {
@@ -15,16 +18,16 @@ class Second extends Natural
      *
      * @param int $value
      */
-    public function __construct($value)
+    public function __construct(int $value)
     {
-        $options = array(
-            'options' => array('min_range' => self::MIN_SECOND, 'max_range' => self::MAX_SECOND)
-        );
+        $options = [
+            'options' => ['min_range' => self::MIN_SECOND, 'max_range' => self::MAX_SECOND],
+        ];
 
         $filteredValue = filter_var($value, FILTER_VALIDATE_INT, $options);
 
         if (false === $filteredValue) {
-            throw new InvalidNativeArgumentException($value, array('int (>=0, <=59)'));
+            throw new InvalidNativeArgumentException($value, ['int (>=0, <=59)']);
         }
 
         parent::__construct($filteredValue);
@@ -35,10 +38,10 @@ class Second extends Natural
      *
      * @return Second
      */
-    public static function now()
+    public static function now(): self
     {
-        $now    = new \DateTime('now');
-        $second = \intval($now->format('s'));
+        $now = new \DateTime('now');
+        $second = intval($now->format('s'));
 
         return new static($second);
     }

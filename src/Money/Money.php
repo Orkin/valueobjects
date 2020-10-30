@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Money;
 
 use Money\Money as BaseMoney;
@@ -9,14 +11,16 @@ use ValueObjects\Number\Real;
 use ValueObjects\Number\RoundingMode;
 use ValueObjects\Util\Util;
 use ValueObjects\ValueObjectInterface;
+use function intval;
+use function sprintf;
 
 class Money implements ValueObjectInterface
 {
     /** @var BaseMoney */
-    protected $money;
+    protected BaseMoney $money;
 
     /** @var Currency */
-    protected $currency;
+    protected Currency $currency;
 
     /**
      * Returns a Money object from native int amount and string currency code
@@ -25,7 +29,7 @@ class Money implements ValueObjectInterface
      * @param  string $currency Currency code of the money object
      * @return static
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
         $args = func_get_args();
 
@@ -38,8 +42,8 @@ class Money implements ValueObjectInterface
     /**
      * Returns a Money object
      *
-     * @param \ValueObjects\Number\Integer $amount   Amount expressed in the smallest units of $currency (e.g. cents)
-     * @param Currency                     $currency Currency of the money object
+     * @param Integer  $amount   Amount expressed in the smallest units of $currency (e.g. cents)
+     * @param Currency $currency Currency of the money object
      */
     public function __construct(Integer $amount, Currency $currency)
     {
@@ -54,7 +58,7 @@ class Money implements ValueObjectInterface
      * @param  ValueObjectInterface $money
      * @return bool
      */
-    public function sameValueAs(ValueObjectInterface $money)
+    public function sameValueAs(ValueObjectInterface $money): bool
     {
         if (false === Util::classEquals($this, $money)) {
             return false;
@@ -66,13 +70,11 @@ class Money implements ValueObjectInterface
     /**
      * Returns money amount
      *
-     * @return \ValueObjects\Number\Integer
+     * @return Integer
      */
     public function getAmount()
     {
-        $amount = new Integer($this->money->getAmount());
-
-        return $amount;
+        return new Integer(intval($this->money->getAmount()));
     }
 
     /**
@@ -80,7 +82,7 @@ class Money implements ValueObjectInterface
      *
      * @return Currency
      */
-    public function getCurrency()
+    public function getCurrency(): Currency
     {
         return clone $this->currency;
     }
@@ -89,15 +91,14 @@ class Money implements ValueObjectInterface
      * Add an integer quantity to the amount and returns a new Money object.
      * Use a negative quantity for subtraction.
      *
-     * @param  \ValueObjects\Number\Integer $quantity Quantity to add
+     * @param Integer $quantity Quantity to add
+     *
      * @return Money
      */
     public function add(Integer $quantity)
     {
         $amount = new Integer($this->getAmount()->toNative() + $quantity->toNative());
-        $result = new static($amount, $this->getCurrency());
-
-        return $result;
+        return new static($amount, $this->getCurrency());
     }
 
     /**
@@ -105,20 +106,18 @@ class Money implements ValueObjectInterface
      * Use 0 < Real $multipler < 1 for division.
      *
      * @param  Real  $multiplier
-     * @param  mixed $rounding_mode Rounding mode of the operation. Defaults to RoundingMode::HALF_UP.
+     * @param  mixed $roundingMode Rounding mode of the operation. Defaults to RoundingMode::HALF_UP.
      * @return Money
      */
-    public function multiply(Real $multiplier, RoundingMode $rounding_mode = null)
+    public function multiply(Real $multiplier, RoundingMode $roundingMode = null)
     {
-        if (null === $rounding_mode) {
-            $rounding_mode = RoundingMode::HALF_UP();
+        if (null === $roundingMode) {
+            $roundingMode = RoundingMode::HALF_UP();
         }
 
         $amount        = $this->getAmount()->toNative() * $multiplier->toNative();
-        $roundedAmount = new Integer(round($amount, 0, $rounding_mode->toNative()));
-        $result        = new static($roundedAmount, $this->getCurrency());
-
-        return $result;
+        $roundedAmount = new Integer(intval(round($amount, 0, $roundingMode->toNative())));
+        return new static($roundedAmount, $this->getCurrency());
     }
 
     /**
@@ -126,8 +125,8 @@ class Money implements ValueObjectInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
-        return \sprintf('%s %d', $this->getCurrency()->getCode(), $this->getAmount()->toNative());
+        return sprintf('%s %d', $this->getCurrency()->getCode(), $this->getAmount()->toNative());
     }
 }

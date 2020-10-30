@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Money;
 
 use ValueObjects\Enum\Enum;

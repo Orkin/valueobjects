@@ -2,6 +2,7 @@
 
 namespace ValueObjects\Tests\Web;
 
+use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Structure\Dictionary;
 use ValueObjects\Tests\TestCase;
 use ValueObjects\Web\QueryString;
@@ -13,22 +14,22 @@ class QueryStringTest extends TestCase
     {
         $query = new QueryString('?foo=bar');
 
-        $this->assertInstanceOf('ValueObjects\Web\QueryString', $query);
+        $this->assertInstanceOf(QueryString::class, $query);
     }
 
     public function testEmptyQueryString()
     {
         $query = new NullQueryString();
 
-        $this->assertInstanceOf('ValueObjects\Web\QueryString', $query);
+        $this->assertInstanceOf(QueryString::class, $query);
 
         $dictionary = $query->toDictionary();
-        $this->assertInstanceOf('ValueObjects\Structure\Dictionary', $dictionary);
+        $this->assertInstanceOf(Dictionary::class, $dictionary);
     }
 
-    /** @expectedException ValueObjects\Exception\InvalidNativeArgumentException */
     public function testInvalidQueryString()
     {
+        $this->expectException(InvalidNativeArgumentException::class);
         new QueryString('invalìd');
     }
 
@@ -37,7 +38,7 @@ class QueryStringTest extends TestCase
         $query = new QueryString('?foo=bar&array[]=one&array[]=two');
         $dictionary = $query->toDictionary();
 
-        $this->assertInstanceOf('ValueObjects\Structure\Dictionary', $dictionary);
+        $this->assertInstanceOf(Dictionary::class, $dictionary);
 
         $array = array(
             'foo'   => 'bar',

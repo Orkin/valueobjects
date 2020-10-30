@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\DateTime;
 
 use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Number\Natural;
+use function intval;
 
 class Minute extends Natural
 {
@@ -14,10 +17,11 @@ class Minute extends Natural
     /**
      * Returns a new Minute from native int value
      *
-     * @param  int    $value
+     * @param int $value
+     *
      * @return Minute
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
         $value = func_get_arg(0);
 
@@ -29,16 +33,16 @@ class Minute extends Natural
      *
      * @param int $value
      */
-    public function __construct($value)
+    public function __construct(int $value)
     {
-        $options = array(
-            'options' => array('min_range' => self::MIN_MINUTE, 'max_range' => self::MAX_MINUTE)
-        );
+        $options = [
+            'options' => ['min_range' => self::MIN_MINUTE, 'max_range' => self::MAX_MINUTE],
+        ];
 
         $filteredValue = filter_var($value, FILTER_VALIDATE_INT, $options);
 
         if (false === $filteredValue) {
-            throw new InvalidNativeArgumentException($value, array('int (>=0, <=59)'));
+            throw new InvalidNativeArgumentException($value, ['int (>=0, <=59)']);
         }
 
         parent::__construct($filteredValue);
@@ -49,10 +53,10 @@ class Minute extends Natural
      *
      * @return Minute
      */
-    public static function now()
+    public static function now(): self
     {
-        $now    = new \DateTime('now');
-        $minute = \intval($now->format('i'));
+        $now = new \DateTime('now');
+        $minute = intval($now->format('i'));
 
         return new static($minute);
     }

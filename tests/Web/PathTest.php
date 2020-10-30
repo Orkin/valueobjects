@@ -2,6 +2,7 @@
 
 namespace ValueObjects\Tests\Web;
 
+use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Tests\TestCase;
 use ValueObjects\Web\Path;
 
@@ -14,9 +15,9 @@ class PathTest extends TestCase
         $this->assertEquals($pathString, $path->toNative());
     }
 
-    /** @expectedException ValueObjects\Exception\InvalidNativeArgumentException */
     public function testInvalidPath()
     {
+        $this->expectException(InvalidNativeArgumentException::class);
         new Path('//valid?');
     }
 }

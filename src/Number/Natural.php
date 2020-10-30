@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Number;
 
 use ValueObjects\Exception\InvalidNativeArgumentException;
@@ -11,18 +13,18 @@ class Natural extends Integer
      *
      * @param int $value
      */
-    public function __construct($value)
+    public function __construct(int $value)
     {
-        $options = array(
-            'options' => array(
-                'min_range' => 0
-            )
-        );
+        $options = [
+            'options' => [
+                'min_range' => 0,
+            ],
+        ];
 
         $filteredValue = filter_var($value, FILTER_VALIDATE_INT, $options);
 
         if (false === $filteredValue) {
-            throw new InvalidNativeArgumentException($value, array('int (>=0)'));
+            throw new InvalidNativeArgumentException($value, ['int (>=0)']);
         }
 
         parent::__construct($filteredValue);

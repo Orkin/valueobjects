@@ -2,14 +2,15 @@
 
 namespace ValueObjects\Tests\Enum;
 
+use ValueObjects\Enum\Enum;
 use ValueObjects\Tests\TestCase;
 
 class EnumTest extends TestCase
 {
     public function testSameValueAs()
     {
-        $stub1 = $this->getMock('ValueObjects\Enum\Enum', array(), array(), '', false);
-        $stub2 = $this->getMock('ValueObjects\Enum\Enum', array(), array(), '', false);
+        $stub1 = $this->createMock(Enum::class, [], [], '', false);
+        $stub2 = $this->createMock(Enum::class, [], [], '', false);
 
         $stub1->expects($this->any())
               ->method('sameValueAs')
@@ -20,7 +21,7 @@ class EnumTest extends TestCase
 
     public function testToString()
     {
-        $stub = $this->getMock('ValueObjects\Enum\Enum', array(), array(), '', false);
+        $stub = $this->createMock(Enum::class, [], [], '', false);
 
         $this->assertEquals('', $stub->__toString());
     }

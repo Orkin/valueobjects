@@ -6,6 +6,6 @@ namespace ValueObjects\Web;
 
 use ValueObjects\ValueObjectInterface;
 
-interface PortNumberInterface extends ValueObjectInterface
+interface PathInterface extends ValueObjectInterface
 {
 }

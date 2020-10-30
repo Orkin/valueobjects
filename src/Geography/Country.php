@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Geography;
 
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Util\Util;
 use ValueObjects\ValueObjectInterface;
+use function func_get_arg;
 
 class Country implements ValueObjectInterface
 {
     /** @var CountryCode */
-    protected $code;
+    protected CountryCode $code;
 
     /**
      * Returns a new Country object given a native PHP string country code
@@ -17,13 +20,11 @@ class Country implements ValueObjectInterface
      * @param  string $code
      * @return self
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
-        $codeString = \func_get_arg(0);
+        $codeString = func_get_arg(0);
         $code       = CountryCode::byName($codeString);
-        $country    = new static($code);
-
-        return $country;
+        return new static($code);
     }
 
     /**
@@ -42,7 +43,7 @@ class Country implements ValueObjectInterface
      * @param  ValueObjectInterface $country
      * @return bool
      */
-    public function sameValueAs(ValueObjectInterface $country)
+    public function sameValueAs(ValueObjectInterface $country): bool
     {
         if (false === Util::classEquals($this, $country)) {
             return false;
@@ -56,7 +57,7 @@ class Country implements ValueObjectInterface
      *
      * @return CountryCode
      */
-    public function getCode()
+    public function getCode(): CountryCode
     {
         return $this->code;
     }
@@ -66,12 +67,10 @@ class Country implements ValueObjectInterface
      *
      * @return StringLiteral
      */
-    public function getName()
+    public function getName(): StringLiteral
     {
         $code = $this->getCode();
-        $name = CountryCodeName::getName($code);
-
-        return $name;
+        return CountryCodeName::getName($code);
     }
 
     /**
@@ -79,7 +78,7 @@ class Country implements ValueObjectInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getName()->toNative();
     }

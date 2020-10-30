@@ -2,20 +2,22 @@
 
 namespace ValueObjects\Tests\Structure;
 
+use InvalidArgumentException;
+use SplFixedArray;
 use ValueObjects\Number\Integer;
 use ValueObjects\Number\Natural;
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Structure\Collection;
 use ValueObjects\Tests\TestCase;
+use ValueObjects\ValueObjectInterface;
 
 class CollectionTest extends TestCase
 {
-    /** @var Collection */
-    protected $collection;
+    protected Collection $collection;
 
-    public function setup()
+    public function setup(): void
     {
-        $array = new \SplFixedArray(3);
+        $array = new SplFixedArray(3);
         $array->offsetSet(0, new StringLiteral('one'));
         $array->offsetSet(1, new StringLiteral('two'));
         $array->offsetSet(2, new Integer(3));
@@ -23,17 +25,17 @@ class CollectionTest extends TestCase
         $this->collection = new Collection($array);
     }
 
-    /** @expectedException \InvalidArgumentException */
     public function testInvalidArgument()
     {
-        $array = \SplFixedArray::fromArray(array('one', 'two', 'three'));
+        $this->expectException(InvalidArgumentException::class);
+        $array = SplFixedArray::fromArray(array('one', 'two', 'three'));
 
         new Collection($array);
     }
 
     public function testFromNative()
     {
-        $array = \SplFixedArray::fromArray(array(
+        $array = SplFixedArray::fromArray(array(
             'one',
             'two',
             array(1, 2)
@@ -41,12 +43,12 @@ class CollectionTest extends TestCase
         $fromNativeCollection = Collection::fromNative($array);
 
         $innerArray = new Collection(
-            \SplFixedArray::fromArray(array(
+            SplFixedArray::fromArray(array(
                     new StringLiteral('1'),
                     new StringLiteral('2')
             ))
         );
-        $array = \SplFixedArray::fromArray(array(
+        $array = SplFixedArray::fromArray(array(
             new StringLiteral('one'),
             new StringLiteral('two'),
             $innerArray
@@ -58,14 +60,14 @@ class CollectionTest extends TestCase
 
     public function testSameValueAs()
     {
-        $array = \SplFixedArray::fromArray(array(
+        $array = SplFixedArray::fromArray(array(
             new StringLiteral('one'),
             new StringLiteral('two'),
             new Integer(3)
         ));
         $collection2 = new Collection($array);
 
-        $array = \SplFixedArray::fromArray(array(
+        $array = SplFixedArray::fromArray(array(
             'one',
             'two',
             array(1, 2)
@@ -76,7 +78,7 @@ class CollectionTest extends TestCase
         $this->assertTrue($collection2->sameValueAs($this->collection));
         $this->assertFalse($this->collection->sameValueAs($collection3));
 
-        $mock = $this->getMock('ValueObjects\ValueObjectInterface');
+        $mock = $this->createMock(ValueObjectInterface::class);
         $this->assertFalse($this->collection->sameValueAs($mock));
     }
 

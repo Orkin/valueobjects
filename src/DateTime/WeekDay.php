@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\DateTime;
 
 use ValueObjects\Enum\Enum;
+use function strtoupper;
 
 /**
  * @method static WeekDay MONDAY()
@@ -28,7 +31,7 @@ class WeekDay extends Enum
      *
      * @return WeekDay
      */
-    public static function now()
+    public static function now(): self
     {
         $now = new \DateTime('now');
 
@@ -41,9 +44,9 @@ class WeekDay extends Enum
      * @param  \DateTime $date
      * @return WeekDay
      */
-    public static function fromNativeDateTime(\DateTime $date)
+    public static function fromNativeDateTime(\DateTime $date): self
     {
-        $weekDay = \strtoupper($date->format('l'));
+        $weekDay = strtoupper($date->format('l'));
 
         return static::byName($weekDay);
     }
@@ -54,7 +57,7 @@ class WeekDay extends Enum
      *
      * @return int
      */
-    public function getNumericValue()
+    public function getNumericValue(): int
     {
         return $this->getOrdinal() + 1;
     }

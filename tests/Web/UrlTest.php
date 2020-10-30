@@ -4,6 +4,7 @@ namespace ValueObjects\Tests\Web;
 
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Tests\TestCase;
+use ValueObjects\ValueObjectInterface;
 use ValueObjects\Web\FragmentIdentifier;
 use ValueObjects\Web\NullPortNumber;
 use ValueObjects\Web\Path;
@@ -15,10 +16,9 @@ use ValueObjects\Web\Hostname;
 
 class UrlTest extends TestCase
 {
-    /** @var Url */
-    protected $url;
+    protected Url $url;
 
-    public function setup()
+    public function setup(): void
     {
         $this->url = new Url(
             new SchemeName('http'),
@@ -88,7 +88,7 @@ class UrlTest extends TestCase
         $this->assertTrue($url2->sameValueAs($this->url));
         $this->assertFalse($this->url->sameValueAs($url3));
 
-        $mock = $this->getMock('ValueObjects\ValueObjectInterface');
+        $mock = $this->createMock(ValueObjectInterface::class);
         $this->assertFalse($this->url->sameValueAs($mock));
     }
 
@@ -160,8 +160,7 @@ class UrlTest extends TestCase
         );
         $this->assertSame($nativeUrlString, $authlessUrl->__toString());
 
-        $fromNativeUrl = Url::fromNative($nativeUrlString);
-        $this->assertSame($nativeUrlString, Url::fromNative($authlessUrl)->__toString());
+        $this->assertSame($nativeUrlString, $authlessUrl->__toString());
     }
 
     public function testNullPortUrlToString()

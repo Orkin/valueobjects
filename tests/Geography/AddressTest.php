@@ -2,19 +2,20 @@
 
 namespace ValueObjects\Tests\Geography;
 
+use BadMethodCallException;
 use ValueObjects\Geography\Address;
 use ValueObjects\Geography\Country;
 use ValueObjects\Geography\CountryCode;
 use ValueObjects\Geography\Street;
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Tests\TestCase;
+use ValueObjects\ValueObjectInterface;
 
 class AddressTest extends TestCase
 {
-    /** @var Address */
-    protected $address;
+    protected Address $address;
 
-    public function setup()
+    public function setup(): void
     {
         $this->address = new Address(
             new StringLiteral('Nicolò Pignatelli'),
@@ -33,9 +34,9 @@ class AddressTest extends TestCase
         $this->assertTrue($this->address->sameValueAs($fromNativeAddress));
     }
 
-    /** @expectedException \BadMethodCallException */
     public function testInvalidFromNative()
     {
+        $this->expectException(BadMethodCallException::class);
         Address::fromNative('invalid');
     }
 
@@ -65,7 +66,7 @@ class AddressTest extends TestCase
         $this->assertTrue($address2->sameValueAs($this->address));
         $this->assertFalse($this->address->sameValueAs($address3));
 
-        $mock = $this->getMock('ValueObjects\ValueObjectInterface');
+        $mock = $this->createMock(ValueObjectInterface::class);
         $this->assertFalse($this->address->sameValueAs($mock));
     }
 

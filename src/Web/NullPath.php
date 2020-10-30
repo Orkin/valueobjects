@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace ValueObjects\Web;
 
-class NullQueryString extends QueryString implements QueryStringInterface
+class NullPath extends Path implements PathInterface
 {
     /**
-     * Returns a new NullQueryString
+     * Returns a new NullPath
      *
      */
     public function __construct()

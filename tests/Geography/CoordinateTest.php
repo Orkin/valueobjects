@@ -2,19 +2,20 @@
 
 namespace ValueObjects\Tests\Geography;
 
+use BadMethodCallException;
 use ValueObjects\Geography\Ellipsoid;
 use ValueObjects\Geography\Coordinate;
 use ValueObjects\Geography\Latitude;
 use ValueObjects\Geography\Longitude;
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Tests\TestCase;
+use ValueObjects\ValueObjectInterface;
 
 class CoordinateTest extends TestCase
 {
-    /** @var Coordinate */
-    protected $coordinate;
+    protected Coordinate $coordinate;
 
-    public function setup()
+    public function setup(): void
     {
         $this->coordinate = new Coordinate(
             new Latitude(40.829137),
@@ -33,9 +34,9 @@ class CoordinateTest extends TestCase
         $this->assertTrue($this->coordinate->sameValueAs($fromNativeCoordinate));
     }
 
-    /** @expectedException \BadMethodCallException */
     public function testInvalidFromNative()
     {
+        $this->expectException(BadMethodCallException::class);
         Coordinate::fromNative(40.829137);
     }
 
@@ -55,7 +56,7 @@ class CoordinateTest extends TestCase
         $this->assertTrue($coordinate2->sameValueAs($this->coordinate));
         $this->assertFalse($this->coordinate->sameValueAs($coordinate3));
 
-        $mock = $this->getMock('ValueObjects\ValueObjectInterface');
+        $mock = $this->createMock(ValueObjectInterface::class);
         $this->assertFalse($this->coordinate->sameValueAs($mock));
     }
 
@@ -103,7 +104,7 @@ class CoordinateTest extends TestCase
         );
 
         $distance = $this->coordinate->distanceFrom($newYork);
-        $this->assertSame(7609068.4225575, $distance->toNative());
+        $this->assertSame(7609068.42255751, $distance->toNative());
     }
 
     public function testToString()

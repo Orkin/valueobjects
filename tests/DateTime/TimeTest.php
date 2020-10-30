@@ -2,11 +2,14 @@
 
 namespace ValueObjects\Tests\DateTime;
 
+use DateTime;
 use ValueObjects\DateTime\Minute;
 use ValueObjects\DateTime\Second;
 use ValueObjects\DateTime\Hour;
 use ValueObjects\Tests\TestCase;
 use ValueObjects\DateTime\Time;
+use ValueObjects\ValueObjectInterface;
+use function strval;
 
 class TimeTest extends TestCase
 {
@@ -20,7 +23,7 @@ class TimeTest extends TestCase
 
     public function testFromNativeDateTime()
     {
-        $nativeTime = new \DateTime();
+        $nativeTime = new DateTime();
         $nativeTime->setTime(20, 10, 34);
         $timeFromNative = Time::fromNativeDateTime($nativeTime);
         $constructedTime = new Time(new Hour(20), new Minute(10), new Second(34));
@@ -31,13 +34,13 @@ class TimeTest extends TestCase
     public function testNow()
     {
         $time = Time::now();
-        $this->assertEquals(date('G:i:s'), \strval($time));
+        $this->assertEquals(date('G:i:s'), strval($time));
     }
 
     public function testZero()
     {
         $time = Time::zero();
-        $this->assertEquals('0:00:00', \strval($time));
+        $this->assertEquals('0:00:00', strval($time));
     }
 
     public function testSameValueAs()
@@ -49,7 +52,7 @@ class TimeTest extends TestCase
         $this->assertTrue($time1->sameValueAs($time2));
         $this->assertFalse($time1->sameValueAs($time3));
 
-        $mock = $this->getMock('ValueObjects\ValueObjectInterface');
+        $mock = $this->createMock(ValueObjectInterface::class);
         $this->assertFalse($time1->sameValueAs($mock));
     }
 
@@ -80,7 +83,7 @@ class TimeTest extends TestCase
     public function testToNativeDateTime()
     {
         $time = new Time(new Hour(20), new Minute(10), new Second(34));
-        $nativeTime = \DateTime::createFromFormat('H:i:s', '20:10:34');
+        $nativeTime = DateTime::createFromFormat('H:i:s', '20:10:34');
 
         $this->assertEquals($nativeTime, $time->toNativeDateTime());
     }

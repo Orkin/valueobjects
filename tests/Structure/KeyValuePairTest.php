@@ -5,13 +5,13 @@ namespace ValueObjects\Tests\Structure;
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Structure\KeyValuePair;
 use ValueObjects\Tests\TestCase;
+use ValueObjects\ValueObjectInterface;
 
 class KeyValuePairTest extends TestCase
 {
-    /** @var KeyValuePair */
-    protected $keyValuePair;
+    protected KeyValuePair $keyValuePair;
 
-    public function setup()
+    public function setup(): void
     {
         $this->keyValuePair = new KeyValuePair(new StringLiteral('key'), new StringLiteral('value'));
     }
@@ -22,9 +22,9 @@ class KeyValuePairTest extends TestCase
         $this->assertTrue($this->keyValuePair->sameValueAs($fromNativePair));
     }
 
-    /** @expectedException \BadMethodCallException */
     public function testInvalidFromNative()
     {
+        $this->expectException(\BadMethodCallException::class);
         KeyValuePair::fromNative('key', 'value', 'invalid');
     }
 
@@ -37,7 +37,7 @@ class KeyValuePairTest extends TestCase
         $this->assertTrue($keyValuePair2->sameValueAs($this->keyValuePair));
         $this->assertFalse($this->keyValuePair->sameValueAs($keyValuePair3));
 
-        $mock = $this->getMock('ValueObjects\ValueObjectInterface');
+        $mock = $this->createMock(ValueObjectInterface::class);
         $this->assertFalse($this->keyValuePair->sameValueAs($mock));
     }
 

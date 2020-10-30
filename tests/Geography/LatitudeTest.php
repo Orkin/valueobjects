@@ -2,28 +2,22 @@
 
 namespace ValueObjects\Tests\Geography;
 
+use TypeError;
 use ValueObjects\Geography\Latitude;
 use ValueObjects\Tests\TestCase;
 
 class LatitudeTest extends TestCase
 {
-    public function testValidLatitude()
-    {
-        new Latitude(40.829137);
-    }
-
     public function testNormalization()
     {
         $latitude = new Latitude(91);
         $this->assertEquals(90, $latitude->toNative());
     }
 
-    /**
-     * @expectedException ValueObjects\Exception\InvalidNativeArgumentException
-     * @expectedExceptionMessage Argument "invalid" is invalid. Allowed types for argument are "float".
-     */
     public function testInvalidLatitude()
     {
+        $this->expectException(TypeError::class);
+        $this->expectExceptionMessage("Argument 1 passed to ValueObjects\Geography\Latitude::__construct() must be of the type float, string given");
         new Latitude('invalid');
     }
 }

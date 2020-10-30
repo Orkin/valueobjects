@@ -2,6 +2,7 @@
 
 namespace ValueObjects\Tests\DateTime;
 
+use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Tests\TestCase;
 use ValueObjects\DateTime\Hour;
 
@@ -21,12 +22,12 @@ class HourTest extends TestCase
         $this->assertEquals(date('G'), $hour->toNative());
     }
 
-    /**
-     * @expectedException ValueObjects\Exception\InvalidNativeArgumentException
-     * @expectedExceptionMessage Argument "24" is invalid. Allowed types for argument are "int (>=0, <=23)".
-     */
     public function testInvalidHour()
     {
+        $this->expectException(InvalidNativeArgumentException::class);
+        $this->expectExceptionMessage(
+            "Argument \"24\" is invalid. Allowed types for argument are \"int (>=0, <=23)\"."
+        );
         new Hour(24);
     }
 

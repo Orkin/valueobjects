@@ -2,9 +2,13 @@
 
 namespace ValueObjects\Tests\DateTime;
 
+use DateTimeZone;
+use ValueObjects\DateTime\Exception\InvalidTimeZoneException;
 use ValueObjects\Tests\TestCase;
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\DateTime\TimeZone;
+use ValueObjects\ValueObjectInterface;
+use function strval;
 
 class TimeZoneTest extends TestCase
 {
@@ -18,7 +22,7 @@ class TimeZoneTest extends TestCase
 
     public function testFromNativeDateTimeZone()
     {
-        $nativeTimeZone = new \DateTimeZone('Europe/Madrid');
+        $nativeTimeZone = new DateTimeZone('Europe/Madrid');
         $timeZoneFromNative = TimeZone::fromNativeDateTimeZone($nativeTimeZone);
 
         $constructedTimeZone = new TimeZone(new StringLiteral('Europe/Madrid'));
@@ -29,7 +33,7 @@ class TimeZoneTest extends TestCase
     public function testDefaultTz()
     {
         $timeZone = TimeZone::fromDefault();
-        $this->assertEquals(date_default_timezone_get(), \strval($timeZone));
+        $this->assertEquals(date_default_timezone_get(), strval($timeZone));
     }
 
     public function testSameValueAs()
@@ -41,7 +45,7 @@ class TimeZoneTest extends TestCase
         $this->assertTrue($timeZone1->sameValueAs($timeZone2));
         $this->assertFalse($timeZone1->sameValueAs($timeZone3));
 
-        $mock = $this->getMock('ValueObjects\ValueObjectInterface');
+        $mock = $this->createMock(ValueObjectInterface::class);
         $this->assertFalse($timeZone1->sameValueAs($mock));
     }
 
@@ -55,7 +59,7 @@ class TimeZoneTest extends TestCase
 
     public function testToNativeDateTimeZone()
     {
-        $nativeTimeZone = new \DateTimeZone('Europe/Madrid');
+        $nativeTimeZone = new DateTimeZone('Europe/Madrid');
         $timeZone = new TimeZone(new StringLiteral('Europe/Madrid'));
 
         $this->assertEquals($nativeTimeZone, $timeZone->toNativeDateTimeZone());
@@ -68,11 +72,9 @@ class TimeZoneTest extends TestCase
         $this->assertEquals('Europe/Madrid', $timeZone->__toString());
     }
 
-    /**
-     * @expectedException \ValueObjects\DateTime\Exception\InvalidTimeZoneException
-     */
     public function testExceptionOnInvalidTimeZoneName()
     {
-        $timeZone = new TimeZone(new StringLiteral('Mars/Phobos'));
+        $this->expectException(InvalidTimeZoneException::class);
+        new TimeZone(new StringLiteral('Mars/Phobos'));
     }
 }

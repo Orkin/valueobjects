@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Geography;
 
+use BadMethodCallException;
 use League\Geotools\Convert\Convert;
 use League\Geotools\Distance\Distance;
 use ValueObjects\Number\Real;
@@ -10,34 +13,40 @@ use ValueObjects\Util\Util;
 use ValueObjects\ValueObjectInterface;
 use League\Geotools\Coordinate\Coordinate as BaseCoordinate;
 use League\Geotools\Coordinate\Ellipsoid as BaseEllipsoid;
+use function call_user_func;
+use function count;
+use function func_get_args;
+use function sprintf;
 
 class Coordinate implements ValueObjectInterface
 {
     /** @var Latitude */
-    protected $latitude;
+    protected Latitude $latitude;
 
     /** @var Longitude */
-    protected $longitude;
+    protected Longitude $longitude;
 
     /** @var Ellipsoid */
-    protected $ellipsoid;
+    protected Ellipsoid $ellipsoid;
 
     /**
      * Returns a new Coordinate object from native PHP arguments
      *
      * @return self
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
-        $args = \func_get_args();
+        $args = func_get_args();
 
-        if (\count($args) < 2 || \count($args) > 3) {
-            throw new \BadMethodCallException('You must provide 2 to 3 arguments: 1) latitude, 2) longitude, 3) valid ellipsoid type (optional)');
+        if (count($args) < 2 || count($args) > 3) {
+            throw new BadMethodCallException(
+                'You must provide 2 to 3 arguments: 1) latitude, 2) longitude, 3) valid ellipsoid type (optional)'
+            );
         }
 
-        $coordinate = new BaseCoordinate(array($args[0], $args[1]));
-        $latitude  = Latitude::fromNative($coordinate->getLatitude());
+        $coordinate = new BaseCoordinate([$args[0], $args[1]]);
+        $latitude = Latitude::fromNative($coordinate->getLatitude());
         $longitude = Longitude::fromNative($coordinate->getLongitude());
 
         $nativeEllipsoid = isset($args[2]) ? $args[2] : null;
@@ -59,27 +68,27 @@ class Coordinate implements ValueObjectInterface
             $ellipsoid = Ellipsoid::WGS84();
         }
 
-        $this->latitude   = $latitude;
-        $this->longitude  = $longitude;
-        $this->ellipsoid  = $ellipsoid;
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
+        $this->ellipsoid = $ellipsoid;
     }
 
     /**
      * Tells whether tow Coordinate objects are equal
      *
-     * @param  ValueObjectInterface $coordinate
+     * @param ValueObjectInterface $coordinate
+     *
      * @return bool
      */
-    public function sameValueAs(ValueObjectInterface $coordinate)
+    public function sameValueAs(ValueObjectInterface $coordinate): bool
     {
         if (false === Util::classEquals($this, $coordinate)) {
             return false;
         }
 
-        return $this->getLatitude()->sameValueAs($coordinate->getLatitude())   &&
-               $this->getLongitude()->sameValueAs($coordinate->getLongitude()) &&
-               $this->getEllipsoid()->sameValueAs($coordinate->getEllipsoid())
-        ;
+        return $this->getLatitude()->sameValueAs($coordinate->getLatitude()) &&
+            $this->getLongitude()->sameValueAs($coordinate->getLongitude()) &&
+            $this->getEllipsoid()->sameValueAs($coordinate->getEllipsoid());
     }
 
     /**
@@ -87,7 +96,7 @@ class Coordinate implements ValueObjectInterface
      *
      * @return Latitude
      */
-    public function getLatitude()
+    public function getLatitude(): Latitude
     {
         return clone $this->latitude;
     }
@@ -97,7 +106,7 @@ class Coordinate implements ValueObjectInterface
      *
      * @return Longitude
      */
-    public function getLongitude()
+    public function getLongitude(): Longitude
     {
         return clone $this->longitude;
     }
@@ -107,7 +116,7 @@ class Coordinate implements ValueObjectInterface
      *
      * @return Ellipsoid
      */
-    public function getEllipsoid()
+    public function getEllipsoid(): Ellipsoid
     {
         return $this->ellipsoid;
     }
@@ -117,11 +126,11 @@ class Coordinate implements ValueObjectInterface
      *
      * @return StringLiteral
      */
-    public function toDegreesMinutesSeconds()
+    public function toDegreesMinutesSeconds(): StringLiteral
     {
         $coordinate = static::getBaseCoordinate($this);
-        $convert    = new Convert($coordinate);
-        $dms        = $convert->toDegreesMinutesSeconds();
+        $convert = new Convert($coordinate);
+        $dms = $convert->toDegreesMinutesSeconds();
 
         return new StringLiteral($dms);
     }
@@ -131,11 +140,11 @@ class Coordinate implements ValueObjectInterface
      *
      * @return StringLiteral
      */
-    public function toDecimalMinutes()
+    public function toDecimalMinutes(): StringLiteral
     {
         $coordinate = static::getBaseCoordinate($this);
-        $convert    = new Convert($coordinate);
-        $dm         = $convert->toDecimalMinutes();
+        $convert = new Convert($coordinate);
+        $dm = $convert->toDecimalMinutes();
 
         return new StringLiteral($dm);
     }
@@ -145,11 +154,11 @@ class Coordinate implements ValueObjectInterface
      *
      * @return StringLiteral
      */
-    public function toUniversalTransverseMercator()
+    public function toUniversalTransverseMercator(): StringLiteral
     {
         $coordinate = static::getBaseCoordinate($this);
-        $convert    = new Convert($coordinate);
-        $utm        = $convert->toUniversalTransverseMercator();
+        $convert = new Convert($coordinate);
+        $utm = $convert->toUniversalTransverseMercator();
 
         return new StringLiteral($utm);
     }
@@ -157,13 +166,17 @@ class Coordinate implements ValueObjectInterface
     /**
      * Calculates the distance between two Coordinate objects
      *
-     * @param  Coordinate      $coordinate
-     * @param  DistanceUnit    $unit
-     * @param  DistanceFormula $formula
+     * @param Coordinate      $coordinate
+     * @param DistanceUnit    $unit
+     * @param DistanceFormula $formula
+     *
      * @return Real
      */
-    public function distanceFrom(Coordinate $coordinate, DistanceUnit $unit = null, DistanceFormula $formula = null)
-    {
+    public function distanceFrom(
+        Coordinate $coordinate,
+        DistanceUnit $unit = null,
+        DistanceFormula $formula = null
+    ): Real {
         if (null === $unit) {
             $unit = DistanceUnit::METER();
         }
@@ -172,17 +185,16 @@ class Coordinate implements ValueObjectInterface
             $formula = DistanceFormula::FLAT();
         }
 
-        $baseThis       = static::getBaseCoordinate($this);
+        $baseThis = static::getBaseCoordinate($this);
         $baseCoordinate = static::getBaseCoordinate($coordinate);
 
         $distance = new Distance();
         $distance
             ->setFrom($baseThis)
             ->setTo($baseCoordinate)
-            ->in($unit->toNative())
-        ;
+            ->in($unit->toNative());
 
-        $value = \call_user_func(array($distance, $formula->toNative()));
+        $value = call_user_func([$distance, $formula->toNative()]);
 
         return new Real($value);
     }
@@ -192,23 +204,24 @@ class Coordinate implements ValueObjectInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
-        return \sprintf('%F,%F', $this->getLatitude()->toNative(), $this->getLongitude()->toNative());
+        return sprintf('%F,%F', $this->getLatitude()->toNative(), $this->getLongitude()->toNative());
     }
 
     /**
      * Returns the underlying Coordinate object
      *
-     * @param  self           $coordinate
+     * @param self $coordinate
+     *
      * @return BaseCoordinate
      */
-    protected static function getBaseCoordinate(self $coordinate)
+    protected static function getBaseCoordinate(self $coordinate): BaseCoordinate
     {
-        $latitude   = $coordinate->getLatitude()->toNative();
-        $longitude  = $coordinate->getLongitude()->toNative();
-        $ellipsoid  = BaseEllipsoid::createFromName($coordinate->getEllipsoid()->toNative());
-        $coordinate = new BaseCoordinate(array($latitude, $longitude), $ellipsoid);
+        $latitude = $coordinate->getLatitude()->toNative();
+        $longitude = $coordinate->getLongitude()->toNative();
+        $ellipsoid = BaseEllipsoid::createFromName($coordinate->getEllipsoid()->toNative());
+        $coordinate = new BaseCoordinate([$latitude, $longitude], $ellipsoid);
 
         return $coordinate;
     }

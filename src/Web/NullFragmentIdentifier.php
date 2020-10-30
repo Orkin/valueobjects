@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Web;
 
 class NullFragmentIdentifier extends FragmentIdentifier implements FragmentIdentifierInterface

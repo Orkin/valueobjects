@@ -1,9 +1,10 @@
 <?php
 
-namespace ValueObjects\Tests\Number;
+namespace ValueObjects\Tests\Person;
 
 use ValueObjects\Person\Gender;
 use ValueObjects\Tests\TestCase;
+use ValueObjects\ValueObjectInterface;
 
 class GenderTest extends TestCase
 {
@@ -23,7 +24,7 @@ class GenderTest extends TestCase
         $this->assertTrue($male2->sameValueAs($male1));
         $this->assertFalse($male1->sameValueAs($other));
 
-        $mock = $this->getMock('ValueObjects\ValueObjectInterface');
+        $mock = $this->createMock(ValueObjectInterface::class);
         $this->assertFalse($male1->sameValueAs($mock));
     }
 

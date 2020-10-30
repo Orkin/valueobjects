@@ -1,19 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Boolean;
 
-use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Util\Util;
 use ValueObjects\ValueObjectInterface;
 
 class BoolLiteral implements ValueObjectInterface
 {
-    protected $value;
+    protected bool $value;
 
     /**
      * Returns a BoolLiteral object given a BooleanString as parameter.
      *
-     * @param  BooleanString $booleanString
+     * @param BooleanString $booleanString
      *
      * @return static
      */
@@ -25,11 +26,11 @@ class BoolLiteral implements ValueObjectInterface
     /**
      * Returns a BoolLiteral object given a PHP native bool as parameter.
      *
-     * @param  bool $value
+     * @param bool $value
      *
      * @return static
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
         $value = func_get_arg(0);
 
@@ -41,23 +42,19 @@ class BoolLiteral implements ValueObjectInterface
      *
      * @param bool $value
      */
-    public function __construct($value)
+    public function __construct(bool $value)
     {
-        if (false === \is_bool($value)) {
-            throw new InvalidNativeArgumentException($value, array('bool'));
-        }
-
         $this->value = $value;
     }
 
     /**
      * Tells whether two BoolLiteral are equal by comparing their values
      *
-     * @param  ValueObjectInterface $boolLiteral
+     * @param ValueObjectInterface $boolLiteral
      *
      * @return bool
      */
-    public function sameValueAs(ValueObjectInterface $boolLiteral)
+    public function sameValueAs(ValueObjectInterface $boolLiteral): bool
     {
         if (false === Util::classEquals($this, $boolLiteral)) {
             return false;
@@ -71,7 +68,7 @@ class BoolLiteral implements ValueObjectInterface
      *
      * @return bool
      */
-    public function toNative()
+    public function toNative(): bool
     {
         return $this->value;
     }
@@ -81,7 +78,7 @@ class BoolLiteral implements ValueObjectInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->value ? 'true' : 'false';
     }

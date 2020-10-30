@@ -2,16 +2,16 @@
 
 namespace ValueObjects\Tests\Number;
 
+use BadMethodCallException;
+use ValueObjects\Number\Complex;
 use ValueObjects\Number\Real;
 use ValueObjects\Tests\TestCase;
-use ValueObjects\Number\Complex;
 
 class ComplexTest extends TestCase
 {
-    /** @var Complex */
-    private $complex;
+    private Complex $complex;
 
-    public function setup()
+    public function setup(): void
     {
         $this->complex = new Complex(new Real(2.05), new Real(3.2));
     }
@@ -25,8 +25,8 @@ class ComplexTest extends TestCase
 
     public function testFromNativeWithWrongNumberOfArgsThrowsError()
     {
-        $this->setExpectedException('BadMethodCallException');
-        $fromNativeComplex = Complex::fromNative(2.05);
+        $this->expectException(BadMethodCallException::class);
+        Complex::fromNative(2.05);
     }
 
     public function testFromPolar()
@@ -35,7 +35,7 @@ class ComplexTest extends TestCase
         $arg = new Real(1.0010398733119);
         $fromPolar = Complex::fromPolar($mod, $arg);
 
-        $nativeModulus  = $this->complex->getModulus();
+        $nativeModulus = $this->complex->getModulus();
         $nativeArgument = $this->complex->getArgument();
 
         $this->assertTrue($nativeModulus->sameValueAs($fromPolar->getModulus()));
@@ -44,7 +44,7 @@ class ComplexTest extends TestCase
 
     public function testToNative()
     {
-        $this->assertEquals(array(2.05, 3.2), $this->complex->toNative());
+        $this->assertEquals([2.05, 3.2], $this->complex->toNative());
     }
 
     public function testGetReal()

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Climate;
 
 class Celsius extends Temperature
@@ -7,7 +9,7 @@ class Celsius extends Temperature
     /**
      * @return Celsius
      */
-    public function toCelsius()
+    public function toCelsius(): Celsius
     {
         return new static($this->value);
     }
@@ -15,7 +17,7 @@ class Celsius extends Temperature
     /**
      * @return Kelvin
      */
-    public function toKelvin()
+    public function toKelvin(): Kelvin
     {
         return new Kelvin($this->value + 273.15);
     }
@@ -23,7 +25,7 @@ class Celsius extends Temperature
     /**
      * @return Fahrenheit
      */
-    public function toFahrenheit()
+    public function toFahrenheit(): Fahrenheit
     {
         return new Fahrenheit($this->value * 1.8 + 32);
     }

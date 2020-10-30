@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Geography;
 
 use ValueObjects\StringLiteral\StringLiteral;
 
 class CountryCodeName
 {
-    private static $names = array(
+    private static array $names = [
         'AF' => 'Afghanistan',
         'AX' => 'Åland Islands',
         'AL' => 'Albania',
@@ -251,18 +253,19 @@ class CountryCodeName
         'YE' => 'Yemen',
         'ZM' => 'Zambia',
         'ZW' => 'Zimbabwe',
-    );
+    ];
 
     /**
      * Returns country name
      *
-     * @param  CountryCode $code
+     * @param CountryCode $code
+     *
      * @return StringLiteral
      */
-    public static function getName(CountryCode $code)
+    public static function getName(CountryCode $code): StringLiteral
     {
         $codeValue = $code->toNative();
-        $name      = self::$names[$codeValue];
+        $name = self::$names[$codeValue];
 
         return new StringLiteral($name);
     }

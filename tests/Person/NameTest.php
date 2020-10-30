@@ -5,12 +5,13 @@ namespace ValueObjects\Tests\Person;
 use ValueObjects\Person\Name;
 use ValueObjects\Tests\TestCase;
 use ValueObjects\StringLiteral\StringLiteral;
+use ValueObjects\ValueObjectInterface;
 
 class NameTest extends TestCase
 {
-    private $name;
+    private Name $name;
 
-    public function setup()
+    public function setup(): void
     {
         $this->name = new Name(new StringLiteral('foo'), new StringLiteral('bar'), new StringLiteral('baz'));
     }
@@ -58,7 +59,7 @@ class NameTest extends TestCase
         $this->assertTrue($name2->sameValueAs($this->name));
         $this->assertFalse($this->name->sameValueAs($name3));
 
-        $mock = $this->getMock('ValueObjects\ValueObjectInterface');
+        $mock = $this->createMock(ValueObjectInterface::class);
         $this->assertFalse($this->name->sameValueAs($mock));
     }
 

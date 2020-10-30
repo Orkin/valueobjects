@@ -1,30 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\DateTime;
 
 use ValueObjects\Util\Util;
 use ValueObjects\ValueObjectInterface;
+use function sprintf;
 
 class DateTime implements ValueObjectInterface
 {
-    /** @var Date */
-    protected $date;
+    protected Date $date;
 
-    /** @var Time */
-    protected $time;
+    protected Time $time;
 
     /**
      * Returns a new DateTime object from native values
      *
-     * @param  int      $year
-     * @param  string   $month
-     * @param  int      $day
-     * @param  int      $hour
-     * @param  int      $minute
-     * @param  int      $second
+     * @param int $year
+     * @param string $month
+     * @param int $day
+     * @param int $hour
+     * @param int $minute
+     * @param int $second
+     *
      * @return DateTime
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
         $args = func_get_args();
 
@@ -37,10 +39,11 @@ class DateTime implements ValueObjectInterface
     /**
      * Returns a new DateTime from a native PHP \DateTime
      *
-     * @param  \DateTime $date_time
+     * @param \DateTime $date_time
+     *
      * @return DateTime
      */
-    public static function fromNativeDateTime(\DateTime $date_time)
+    public static function fromNativeDateTime(\DateTime $date_time): DateTime
     {
         $date = Date::fromNativeDateTime($date_time);
         $time = Time::fromNativeDateTime($date_time);
@@ -53,11 +56,9 @@ class DateTime implements ValueObjectInterface
      *
      * @return DateTime
      */
-    public static function now()
+    public static function now(): self
     {
-        $dateTime = new static(Date::now(), Time::now());
-
-        return $dateTime;
+        return new static(Date::now(), Time::now());
     }
 
     /**
@@ -80,16 +81,19 @@ class DateTime implements ValueObjectInterface
     /**
      * Tells whether two DateTime are equal by comparing their values
      *
-     * @param  ValueObjectInterface $date_time
+     * @param ValueObjectInterface $date_time
+     *
      * @return bool
      */
-    public function sameValueAs(ValueObjectInterface $date_time)
+    public function sameValueAs(ValueObjectInterface $date_time): bool
     {
         if (false === Util::classEquals($this, $date_time)) {
             return false;
         }
 
-        return $this->getDate()->sameValueAs($date_time->getDate()) && $this->getTime()->sameValueAs($date_time->getTime());
+        return $this->getDate()->sameValueAs($date_time->getDate()) && $this->getTime()->sameValueAs(
+                $date_time->getTime()
+            );
     }
 
     /**
@@ -97,7 +101,7 @@ class DateTime implements ValueObjectInterface
      *
      * @return Date
      */
-    public function getDate()
+    public function getDate(): Date
     {
         return clone $this->date;
     }
@@ -107,7 +111,7 @@ class DateTime implements ValueObjectInterface
      *
      * @return Time
      */
-    public function getTime()
+    public function getTime(): Time
     {
         return clone $this->time;
     }
@@ -117,12 +121,12 @@ class DateTime implements ValueObjectInterface
      *
      * @return \DateTime
      */
-    public function toNativeDateTime()
+    public function toNativeDateTime(): \DateTime
     {
-        $year   = $this->getDate()->getYear()->toNative();
-        $month  = $this->getDate()->getMonth()->getNumericValue();
-        $day    = $this->getDate()->getDay()->toNative();
-        $hour   = $this->getTime()->getHour()->toNative();
+        $year = $this->getDate()->getYear()->toNative();
+        $month = $this->getDate()->getMonth()->getNumericValue();
+        $day = $this->getDate()->getDay()->toNative();
+        $hour = $this->getTime()->getHour()->toNative();
         $minute = $this->getTime()->getMinute()->toNative();
         $second = $this->getTime()->getSecond()->toNative();
 
@@ -138,8 +142,8 @@ class DateTime implements ValueObjectInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
-        return \sprintf('%s %s', $this->getDate(), $this->getTime());
+        return sprintf('%s %s', $this->getDate(), $this->getTime());
     }
 }

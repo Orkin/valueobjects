@@ -2,6 +2,7 @@
 
 namespace ValueObjects\Tests\Web;
 
+use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Tests\TestCase;
 use ValueObjects\Web\PortNumber;
 
@@ -11,12 +12,12 @@ class PortNumberTest extends TestCase
     {
         $port = new PortNumber(80);
 
-        $this->assertInstanceOf('ValueObjects\Web\PortNumber', $port);
+        $this->assertInstanceOf(PortNumber::class, $port);
     }
 
-    /** @expectedException ValueObjects\Exception\InvalidNativeArgumentException */
     public function testInvalidPortNumber()
     {
+        $this->expectException(InvalidNativeArgumentException::class);
         new PortNumber(65536);
     }
 }

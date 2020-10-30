@@ -2,6 +2,8 @@
 
 namespace ValueObjects\Tests\Structure;
 
+use InvalidArgumentException;
+use SplFixedArray;
 use ValueObjects\Number\Integer;
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Structure\Collection;
@@ -11,12 +13,11 @@ use ValueObjects\Tests\TestCase;
 
 class DictionaryTest extends TestCase
 {
-    /** @var Dictionary */
-    protected $dictionary;
+    protected Dictionary $dictionary;
 
-    public function setup()
+    public function setup(): void
     {
-        $array = \SplFixedArray::fromArray(array(
+        $array = SplFixedArray::fromArray(array(
             new KeyValuePair(new Integer(0), new StringLiteral('zero')),
             new KeyValuePair(new Integer(1), new StringLiteral('one')),
             new KeyValuePair(new Integer(2), new StringLiteral('two')),
@@ -27,13 +28,13 @@ class DictionaryTest extends TestCase
 
     public function testFromNative()
     {
-        $constructedArray = \SplFixedArray::fromArray(array(
+        $constructedArray = SplFixedArray::fromArray(array(
             new KeyValuePair(new StringLiteral('0'), new StringLiteral('zero')),
             new KeyValuePair(new StringLiteral('1'), new StringLiteral('one')),
             new KeyValuePair(new StringLiteral('2'), new StringLiteral('two')),
         ));
 
-        $fromNativeArray = \SplFixedArray::fromArray(array(
+        $fromNativeArray = SplFixedArray::fromArray(array(
             'zero',
             'one',
             'two'
@@ -45,17 +46,17 @@ class DictionaryTest extends TestCase
         $this->assertTrue($constructedDictionary->sameValueAs($fromNativeDictionary));
     }
 
-    /** @expectedException \InvalidArgumentException */
     public function testInvalidArgument()
     {
-        $array = \SplFixedArray::fromArray(array('one', 'two', 'three'));
+        $this->expectException(InvalidArgumentException::class);
+        $array = SplFixedArray::fromArray(array('one', 'two', 'three'));
 
         new Dictionary($array);
     }
 
     public function testKeys()
     {
-        $array = \SplFixedArray::fromArray(array(
+        $array = SplFixedArray::fromArray(array(
             new Integer(0),
             new Integer(1),
             new Integer(2)
@@ -67,7 +68,7 @@ class DictionaryTest extends TestCase
 
     public function testValues()
     {
-        $array = \SplFixedArray::fromArray(array(
+        $array = SplFixedArray::fromArray(array(
             new StringLiteral('zero'),
             new StringLiteral('one'),
             new StringLiteral('two')

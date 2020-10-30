@@ -2,7 +2,9 @@
 
 namespace ValueObjects\Tests\Web;
 
+use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Tests\TestCase;
+use ValueObjects\Web\Domain;
 use ValueObjects\Web\EmailAddress;
 
 class EmailAddressTest extends TestCase
@@ -10,15 +12,15 @@ class EmailAddressTest extends TestCase
     public function testValidEmailAddress()
     {
         $email1 = new EmailAddress('foo@bar.com');
-        $this->assertInstanceOf('ValueObjects\Web\EmailAddress', $email1);
+        $this->assertInstanceOf(EmailAddress::class, $email1);
 
         $email2 = new EmailAddress('foo@[120.0.0.1]');
-        $this->assertInstanceOf('ValueObjects\Web\EmailAddress', $email2);
+        $this->assertInstanceOf(EmailAddress::class, $email2);
     }
 
-    /** @expectedException ValueObjects\Exception\InvalidNativeArgumentException */
     public function testInvalidEmailAddress()
     {
+        $this->expectException(InvalidNativeArgumentException::class);
         new EmailAddress('invalid');
     }
 
@@ -36,6 +38,6 @@ class EmailAddressTest extends TestCase
         $domainPart = $email->getDomainPart();
 
         $this->assertEquals('bar.com', $domainPart->toNative());
-        $this->assertInstanceOf('ValueObjects\Web\Domain', $domainPart);
+        $this->assertInstanceOf(Domain::class, $domainPart);
     }
 }

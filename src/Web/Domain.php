@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Web;
 
 use ValueObjects\StringLiteral\StringLiteral;
@@ -12,7 +14,7 @@ abstract class Domain extends StringLiteral
      * @param $domain
      * @return Hostname|IPAddress
      */
-    public static function specifyType($domain)
+    public static function specifyType($domain): self
     {
         if (false !== filter_var($domain, FILTER_VALIDATE_IP)) {
             return new IPAddress($domain);

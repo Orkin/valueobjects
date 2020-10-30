@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\DateTime;
 
 use ValueObjects\Enum\Enum;
@@ -38,7 +40,7 @@ class Month extends Enum
      *
      * @return Month
      */
-    public static function now()
+    public static function now(): self
     {
         $now = new \DateTime('now');
 
@@ -51,7 +53,7 @@ class Month extends Enum
      * @param  \DateTime $date
      * @return Month
      */
-    public static function fromNativeDateTime(\DateTime $date)
+    public static function fromNativeDateTime(\DateTime $date): self
     {
         $month = \strtoupper($date->format('F'));
 
@@ -64,7 +66,7 @@ class Month extends Enum
      *
      * @return int
      */
-    public function getNumericValue()
+    public function getNumericValue(): int
     {
         return $this->getOrdinal() + 1;
     }

@@ -1,33 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Person;
 
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Util\Util;
 use ValueObjects\ValueObjectInterface;
+use function strval;
 
 class Name implements ValueObjectInterface
 {
     /**
      * First name
      *
-     * @var \ValueObjects\StringLiteral\StringLiteral
+     * @var StringLiteral
      */
-    private $firstName;
+    private StringLiteral $firstName;
 
     /**
      * Middle name
      *
-     * @var \ValueObjects\StringLiteral\StringLiteral
+     * @var StringLiteral
      */
-    private $middleName;
+    private StringLiteral $middleName;
 
     /**
      * Last name
      *
-     * @var \ValueObjects\StringLiteral\StringLiteral
+     * @var StringLiteral
      */
-    private $lastName;
+    private StringLiteral $lastName;
 
     /**
      * Returns a Name objects form PHP native values
@@ -37,7 +40,7 @@ class Name implements ValueObjectInterface
      * @param  string $last_name
      * @return Name
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
         $args = func_get_args();
 
@@ -67,7 +70,7 @@ class Name implements ValueObjectInterface
      *
      * @return StringLiteral
      */
-    public function getFirstName()
+    public function getFirstName(): StringLiteral
     {
         return $this->firstName;
     }
@@ -77,7 +80,7 @@ class Name implements ValueObjectInterface
      *
      * @return StringLiteral
      */
-    public function getMiddleName()
+    public function getMiddleName(): StringLiteral
     {
         return $this->middleName;
     }
@@ -87,7 +90,7 @@ class Name implements ValueObjectInterface
      *
      * @return StringLiteral
      */
-    public function getLastName()
+    public function getLastName(): StringLiteral
     {
         return $this->lastName;
     }
@@ -97,7 +100,7 @@ class Name implements ValueObjectInterface
      *
      * @return StringLiteral
      */
-    public function getFullName()
+    public function getFullName(): StringLiteral
     {
         $fullNameString = $this->firstName .
             ($this->middleName->isEmpty() ? '' : ' ' . $this->middleName) .
@@ -114,7 +117,7 @@ class Name implements ValueObjectInterface
      * @param  ValueObjectInterface $name
      * @return bool
      */
-    public function sameValueAs(ValueObjectInterface $name)
+    public function sameValueAs(ValueObjectInterface $name): bool
     {
         if (false === Util::classEquals($this, $name)) {
             return false;
@@ -128,8 +131,8 @@ class Name implements ValueObjectInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
-        return \strval($this->getFullName());
+        return strval($this->getFullName());
     }
 }

@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Web;
 
 use ValueObjects\Exception\InvalidNativeArgumentException;
-use Zend\Validator\Hostname as Validator;
+use Laminas\Validator\Hostname as Validator;
 
 class Hostname extends Domain
 {
@@ -12,14 +14,14 @@ class Hostname extends Domain
      *
      * @param string $value
      */
-    public function __construct($value)
+    public function __construct(string $value)
     {
-        $validator = new Validator(array('allow' => Validator::ALLOW_DNS | Validator::ALLOW_LOCAL));
+        $validator = new Validator(['allow' => Validator::ALLOW_DNS | Validator::ALLOW_LOCAL]);
 
         if (false === $validator->isValid($value)) {
-            throw new InvalidNativeArgumentException($value, array('string (valid hostname)'));
+            throw new InvalidNativeArgumentException($value, ['string (valid hostname)']);
         }
 
-        $this->value = $value;
+        parent::__construct($value);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace ValueObjects\Tests\DateTime;
 
+use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Tests\TestCase;
 use ValueObjects\DateTime\MonthDay;
 
@@ -21,12 +22,12 @@ class MonthDayTest extends TestCase
         $this->assertEquals(date('j'), $monthDay->toNative());
     }
 
-    /**
-     * @expectedException ValueObjects\Exception\InvalidNativeArgumentException
-     * @expectedExceptionMessage Argument "32" is invalid. Allowed types for argument are "int (>=0, <=31)".
-     */
     public function testInvalidMonthDay()
     {
+        $this->expectException(InvalidNativeArgumentException::class);
+        $this->expectExceptionMessage(
+            "Argument \"32\" is invalid. Allowed types for argument are \"int (>=0, <=31)\"."
+        );
         new MonthDay(32);
     }
 

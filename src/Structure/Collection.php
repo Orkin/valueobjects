@@ -2,36 +2,46 @@
 
 namespace ValueObjects\Structure;
 
+use InvalidArgumentException;
+use SplFixedArray;
+use Traversable;
 use ValueObjects\Util\Util;
 use ValueObjects\Number\Natural;
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\ValueObjectInterface;
+use function func_get_arg;
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_object;
+use function sprintf;
+use function strval;
 
 class Collection implements ValueObjectInterface
 {
-    /** @var \SplFixedArray */
-    protected $items;
+    /** @var SplFixedArray */
+    protected SplFixedArray $items;
 
     /**
      * Returns a new Collection object
      *
-     * @param  \SplFixedArray $array
+     * @param  SplFixedArray $array
      * @return self
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
-        $array = \func_get_arg(0);
+        $array = func_get_arg(0);
         $items = array();
 
         foreach ($array as $item) {
-            if ($item instanceof \Traversable || \is_array($item)) {
+            if ($item instanceof Traversable || is_array($item)) {
                 $items[] = static::fromNative($item);
             } else {
-                $items[] = new StringLiteral(\strval($item));
+                $items[] = new StringLiteral(strval($item));
             }
         }
 
-        $fixedArray = \SplFixedArray::fromArray($items);
+        $fixedArray = SplFixedArray::fromArray($items);
 
         return new static($fixedArray);
     }
@@ -41,12 +51,13 @@ class Collection implements ValueObjectInterface
      *
      * @return self
      */
-    public function __construct(\SplFixedArray $items)
+    public function __construct(SplFixedArray $items)
     {
         foreach ($items as $item) {
             if (false === $item instanceof ValueObjectInterface) {
-                $type = \is_object($item) ? \get_class($item) : \gettype($item);
-                throw new \InvalidArgumentException(\sprintf('Passed SplFixedArray object must contains "ValueObjectInterface" objects only. "%s" given.', $type));
+                $type = is_object($item) ? get_class($item) : gettype($item);
+                throw new InvalidArgumentException(
+                    sprintf('Passed SplFixedArray object must contains "ValueObjectInterface" objects only. "%s" given.', $type));
             }
         }
 
@@ -59,7 +70,7 @@ class Collection implements ValueObjectInterface
      * @param  ValueObjectInterface $collection
      * @return bool
      */
-    public function sameValueAs(ValueObjectInterface $collection)
+    public function sameValueAs(ValueObjectInterface $collection): bool
     {
         if (false === Util::classEquals($this, $collection) || false === $this->count()->sameValueAs($collection->count())) {
             return false;
@@ -81,7 +92,7 @@ class Collection implements ValueObjectInterface
      *
      * @return Natural
      */
-    public function count()
+    public function count(): Natural
     {
         return new Natural($this->items->count());
     }
@@ -92,7 +103,7 @@ class Collection implements ValueObjectInterface
      * @param  ValueObjectInterface $object
      * @return bool
      */
-    public function contains(ValueObjectInterface $object)
+    public function contains(ValueObjectInterface $object): bool
     {
         foreach ($this->items as $item) {
             if ($item->sameValueAs($object)) {
@@ -108,7 +119,7 @@ class Collection implements ValueObjectInterface
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->items->toArray();
     }
@@ -118,10 +129,8 @@ class Collection implements ValueObjectInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
-        $string = \sprintf('%s(%d)', \get_class($this), $this->count()->toNative());
-
-        return $string;
+        return sprintf('%s(%d)', get_class($this), $this->count()->toNative());
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Money;
 
 use Money\Currency as BaseCurrency;
@@ -9,10 +11,10 @@ use ValueObjects\ValueObjectInterface;
 class Currency implements ValueObjectInterface
 {
     /** @var BaseCurrency */
-    protected $currency;
+    protected BaseCurrency $currency;
 
     /** @var CurrencyCode  */
-    protected $code;
+    protected CurrencyCode $code;
 
     /**
      * Returns a new Currency object from native string currency code
@@ -20,7 +22,7 @@ class Currency implements ValueObjectInterface
      * @param  string $code Currency code
      * @return static
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
         $code = CurrencyCode::get(func_get_arg(0));
 
@@ -39,7 +41,7 @@ class Currency implements ValueObjectInterface
      * @param  ValueObjectInterface $currency
      * @return bool
      */
-    public function sameValueAs(ValueObjectInterface $currency)
+    public function sameValueAs(ValueObjectInterface $currency): bool
     {
         if (false === Util::classEquals($this, $currency)) {
             return false;
@@ -53,7 +55,7 @@ class Currency implements ValueObjectInterface
      *
      * @return CurrencyCode
      */
-    public function getCode()
+    public function getCode(): CurrencyCode
     {
         return $this->code;
     }
@@ -63,7 +65,7 @@ class Currency implements ValueObjectInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getCode()->toNative();
     }

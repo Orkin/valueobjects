@@ -2,6 +2,7 @@
 
 namespace ValueObjects\Tests\DateTime;
 
+use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Tests\TestCase;
 use ValueObjects\DateTime\Minute;
 
@@ -21,12 +22,12 @@ class MinuteTest extends TestCase
         $this->assertEquals(\intval(date('i')), $minute->toNative());
     }
 
-    /**
-     * @expectedException ValueObjects\Exception\InvalidNativeArgumentException
-     * @expectedExceptionMessage Argument "60" is invalid. Allowed types for argument are "int (>=0, <=59)".
-     */
     public function testInvalidMinute()
     {
+        $this->expectException(InvalidNativeArgumentException::class);
+        $this->expectExceptionMessage(
+            "Argument \"60\" is invalid. Allowed types for argument are \"int (>=0, <=59)\"."
+        );
         new Minute(60);
     }
 

@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Enum;
 
 use MabeEnum\Enum as BaseEnum;
 use ValueObjects\Util\Util;
 use ValueObjects\ValueObjectInterface;
+use function strval;
 
 abstract class Enum extends BaseEnum implements ValueObjectInterface
 {
@@ -14,7 +17,7 @@ abstract class Enum extends BaseEnum implements ValueObjectInterface
      * @param  string $value
      * @return static
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
         return static::get(func_get_arg(0));
     }
@@ -35,7 +38,7 @@ abstract class Enum extends BaseEnum implements ValueObjectInterface
      * @param  Enum $enum
      * @return bool
      */
-    public function sameValueAs(ValueObjectInterface $enum)
+    public function sameValueAs(ValueObjectInterface $enum): bool
     {
         if (false === Util::classEquals($this, $enum)) {
             return false;
@@ -49,8 +52,8 @@ abstract class Enum extends BaseEnum implements ValueObjectInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
-        return \strval($this->toNative());
+        return strval($this->toNative());
     }
 }

@@ -4,17 +4,15 @@ namespace ValueObjects\DateTime;
 
 use ValueObjects\Util\Util;
 use ValueObjects\ValueObjectInterface;
+use function intval;
 
 class Time implements ValueObjectInterface
 {
-    /** @var Hour */
-    protected $hour;
+    protected Hour $hour;
 
-    /** @var Minute */
-    protected $minute;
+    protected Minute $minute;
 
-    /** @var Second */
-    protected $second;
+    protected Second $second;
 
     /**
      * Returns a nee Time object from native int hour, minute and second
@@ -24,7 +22,7 @@ class Time implements ValueObjectInterface
      * @param  int  $second
      * @return self
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
         $args = func_get_args();
 
@@ -41,11 +39,11 @@ class Time implements ValueObjectInterface
      * @param  \DateTime $time
      * @return self
      */
-    public static function fromNativeDateTime(\DateTime $time)
+    public static function fromNativeDateTime(\DateTime $time): self
     {
-        $hour   = \intval($time->format('G'));
-        $minute = \intval($time->format('i'));
-        $second = \intval($time->format('s'));
+        $hour   = intval($time->format('G'));
+        $minute = intval($time->format('i'));
+        $second = intval($time->format('s'));
 
         return static::fromNative($hour, $minute, $second);
     }
@@ -55,11 +53,9 @@ class Time implements ValueObjectInterface
      *
      * @return self
      */
-    public static function now()
+    public static function now(): self
     {
-        $time = new static(Hour::now(), Minute::now(), Second::now());
-
-        return $time;
+        return new static(Hour::now(), Minute::now(), Second::now());
     }
 
     /**
@@ -67,11 +63,9 @@ class Time implements ValueObjectInterface
      *
      * @return static
      */
-    public static function zero()
+    public static function zero(): self
     {
-        $time = new static(new Hour(0), new Minute(0), new Second(0));
-
-        return $time;
+        return new static(new Hour(0), new Minute(0), new Second(0));
     }
 
     /**
@@ -94,7 +88,7 @@ class Time implements ValueObjectInterface
      * @param  ValueObjectInterface $time
      * @return bool
      */
-    public function sameValueAs(ValueObjectInterface $time)
+    public function sameValueAs(ValueObjectInterface $time): bool
     {
         if (false === Util::classEquals($this, $time)) {
             return false;
@@ -108,7 +102,7 @@ class Time implements ValueObjectInterface
      *
      * @return Hour
      */
-    public function getHour()
+    public function getHour(): Hour
     {
         return $this->hour;
     }
@@ -118,7 +112,7 @@ class Time implements ValueObjectInterface
      *
      * @return Minute
      */
-    public function getMinute()
+    public function getMinute(): Minute
     {
         return $this->minute;
     }
@@ -128,7 +122,7 @@ class Time implements ValueObjectInterface
      *
      * @return Second
      */
-    public function getSecond()
+    public function getSecond(): Second
     {
         return $this->second;
     }
@@ -139,7 +133,7 @@ class Time implements ValueObjectInterface
      *
      * @return \DateTime
      */
-    public function toNativeDateTime()
+    public function toNativeDateTime(): \DateTime
     {
         $hour   = $this->getHour()->toNative();
         $minute = $this->getMinute()->toNative();
@@ -156,7 +150,7 @@ class Time implements ValueObjectInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->toNativeDateTime()->format('G:i:s');
     }

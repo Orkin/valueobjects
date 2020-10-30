@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\StringLiteral;
 
-use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Util\Util;
 use ValueObjects\ValueObjectInterface;
+use function strlen;
 
 class StringLiteral implements ValueObjectInterface
 {
-    protected $value;
+    protected string $value;
 
     /**
      * Returns a StringLiteral object given a PHP native string as parameter.
@@ -16,7 +18,7 @@ class StringLiteral implements ValueObjectInterface
      * @param  string $value
      * @return StringLiteral
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
         $value = func_get_arg(0);
 
@@ -28,12 +30,8 @@ class StringLiteral implements ValueObjectInterface
      *
      * @param string $value
      */
-    public function __construct($value)
+    public function __construct(string $value)
     {
-        if (false === \is_string($value)) {
-            throw new InvalidNativeArgumentException($value, array('string'));
-        }
-
         $this->value = $value;
     }
 
@@ -42,7 +40,7 @@ class StringLiteral implements ValueObjectInterface
      *
      * @return string
      */
-    public function toNative()
+    public function toNative(): string
     {
         return $this->value;
     }
@@ -53,7 +51,7 @@ class StringLiteral implements ValueObjectInterface
      * @param  ValueObjectInterface $stringLiteral
      * @return bool
      */
-    public function sameValueAs(ValueObjectInterface $stringLiteral)
+    public function sameValueAs(ValueObjectInterface $stringLiteral): bool
     {
         if (false === Util::classEquals($this, $stringLiteral)) {
             return false;
@@ -67,9 +65,9 @@ class StringLiteral implements ValueObjectInterface
      *
      * @return bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
-        return \strlen($this->toNative()) == 0;
+        return strlen($this->toNative()) == 0;
     }
 
     /**
@@ -77,7 +75,7 @@ class StringLiteral implements ValueObjectInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->toNative();
     }

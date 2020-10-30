@@ -2,6 +2,7 @@
 
 namespace ValueObjects\Tests\Climate;
 
+use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Tests\TestCase;
 use ValueObjects\Climate\RelativeHumidity;
 
@@ -15,12 +16,10 @@ class RelativeHumidityTest extends TestCase
         $this->assertTrue($fromNativeRelHum->sameValueAs($constructedRelHum));
     }
 
-    /**
-     * @expectedException \ValueObjects\Exception\InvalidNativeArgumentException
-     * @expectedExceptionMessage Argument "128" is invalid. Allowed types for argument are "int (>=0, <=100)".
-     */
     public function testInvalidRelativeHumidity()
     {
+        $this->expectException(InvalidNativeArgumentException::class);
+        $this->expectExceptionMessage("Argument \"128\" is invalid. Allowed types for argument are \"int (>=0, <=100)");
         new RelativeHumidity(128);
     }
 }

@@ -1,57 +1,69 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Number;
 
+use BadMethodCallException;
 use ValueObjects\Util\Util;
 use ValueObjects\ValueObjectInterface;
+use function atan2;
+use function cos;
+use function count;
+use function func_get_args;
+use function pow;
+use function preg_replace;
+use function sin;
+use function sprintf;
+use function sqrt;
 
 class Complex implements ValueObjectInterface, NumberInterface
 {
     /** @var Real */
-    protected $real;
+    protected Real $real;
 
     /** @var Real */
-    protected $im;
+    protected Real $im;
 
     /**
      * Returns a new Complex object from native PHP arguments
      *
-     * @param  float                        $real Real part of the complex number
-     * @param  float                        $im   Imaginary part of the complex number
+     * @param float $real Real part of the complex number
+     * @param float $im   Imaginary part of the complex number
+     *
      * @return Complex|ValueObjectInterface
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
-        $args = \func_get_args();
+        $args = func_get_args();
 
-        if (\count($args) != 2) {
-            throw new \BadMethodCallException('You must provide 2 arguments: 1) real part, 2) imaginary part');
+        if (count($args) != 2) {
+            throw new BadMethodCallException('You must provide 2 arguments: 1) real part, 2) imaginary part');
         }
 
-        $real    = Real::fromNative($args[0]);
-        $im      = Real::fromNative($args[1]);
-        $complex = new static($real, $im);
+        $real = Real::fromNative($args[0]);
+        $im = Real::fromNative($args[1]);
 
-        return $complex;
+        return new static($real, $im);
     }
 
     /**
      * Returns a Complex given polar coordinates
      *
-     * @param  Real    $modulus
-     * @param  Real    $argument
+     * @param Real $modulus
+     * @param Real $argument
+     *
      * @return Complex
      */
-    public static function fromPolar(Real $modulus, Real $argument)
+    public static function fromPolar(Real $modulus, Real $argument): self
     {
-        $realValue = $modulus->toNative() * \cos($argument->toNative());
-        $imValue   = $modulus->toNative() * \sin($argument->toNative());
-        $real      = new Real($realValue);
-        $im        = new Real($imValue);
-        $complex   = new static($real, $im);
+        $realValue = $modulus->toNative() * cos($argument->toNative());
+        $imValue = $modulus->toNative() * sin($argument->toNative());
+        $real = new Real($realValue);
+        $im = new Real($imValue);
 
-        return $complex;
+        return new static($real, $im);
     }
 
     /**
@@ -63,17 +75,17 @@ class Complex implements ValueObjectInterface, NumberInterface
     public function __construct(Real $real, Real $im)
     {
         $this->real = $real;
-        $this->im   = $im;
+        $this->im = $im;
     }
 
-    public function sameValueAs(ValueObjectInterface $complex)
+    public function sameValueAs(ValueObjectInterface $complex): bool
     {
         if (false === Util::classEquals($this, $complex)) {
             return false;
         }
 
         return $this->getReal()->sameValueAs($complex->getReal()) &&
-               $this->getIm()->sameValueAs($complex->getIm());
+            $this->getIm()->sameValueAs($complex->getIm());
     }
 
     /**
@@ -81,12 +93,12 @@ class Complex implements ValueObjectInterface, NumberInterface
      *
      * @return array
      */
-    public function toNative()
+    public function toNative(): array
     {
-        return array(
+        return [
             $this->getReal()->toNative(),
-            $this->getIm()->toNative()
-        );
+            $this->getIm()->toNative(),
+        ];
     }
 
     /**
@@ -94,7 +106,7 @@ class Complex implements ValueObjectInterface, NumberInterface
      *
      * @return Real
      */
-    public function getReal()
+    public function getReal(): Real
     {
         return clone $this->real;
     }
@@ -104,7 +116,7 @@ class Complex implements ValueObjectInterface, NumberInterface
      *
      * @return Real
      */
-    public function getIm()
+    public function getIm(): Real
     {
         return clone $this->im;
     }
@@ -114,11 +126,11 @@ class Complex implements ValueObjectInterface, NumberInterface
      *
      * @return Real
      */
-    public function getModulus()
+    public function getModulus(): Real
     {
         $real = $this->getReal()->toNative();
-        $im   = $this->getIm()->toNative();
-        $mod  = \sqrt(\pow($real, 2) + \pow($im, 2));
+        $im = $this->getIm()->toNative();
+        $mod = sqrt(pow($real, 2) + pow($im, 2));
 
         return new Real($mod);
     }
@@ -128,11 +140,11 @@ class Complex implements ValueObjectInterface, NumberInterface
      *
      * @return Real
      */
-    public function getArgument()
+    public function getArgument(): Real
     {
         $real = $this->getReal()->toNative();
-        $im   = $this->getIm()->toNative();
-        $arg  = \atan2($im, $real);
+        $im = $this->getIm()->toNative();
+        $arg = atan2($im, $real);
 
         return new Real($arg);
     }
@@ -142,13 +154,13 @@ class Complex implements ValueObjectInterface, NumberInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         $format = '%g %+gi';
-        $real   = $this->getReal()->toNative();
-        $im     = $this->getIm()->toNative();
-        $string = \sprintf($format, $real, $im);
+        $real = $this->getReal()->toNative();
+        $im = $this->getIm()->toNative();
+        $string = sprintf($format, $real, $im);
 
-        return \preg_replace('/(\+|-)/', '$1 ', $string);
+        return preg_replace('/(\+|-)/', '$1 ', $string);
     }
 }

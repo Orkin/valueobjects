@@ -2,14 +2,15 @@
 
 namespace ValueObjects\Tests\NullValue;
 
-use ValueObjects\Tests\TestCase;
+use BadMethodCallException;
 use ValueObjects\NullValue\NullValue;
+use ValueObjects\Tests\TestCase;
 
 class NullValueTest extends TestCase
 {
-    /** @expectedException \BadMethodCallException */
     public function testFromNative()
     {
+        $this->expectException(BadMethodCallException::class);
         NullValue::fromNative();
     }
 
@@ -25,7 +26,7 @@ class NullValueTest extends TestCase
     {
         $null = NullValue::create();
 
-        $this->assertInstanceOf('ValueObjects\NullValue\NullValue', $null);
+        $this->assertInstanceOf(NullValue::class, $null);
     }
 
     public function testToString()

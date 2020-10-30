@@ -3,6 +3,7 @@
 namespace ValueObjects\Tests\Boolean;
 
 use ValueObjects\Boolean\BooleanString;
+use ValueObjects\Exception\InvalidNativeArgumentException;
 
 class BooleanStringTest extends BooleanTestCase
 {
@@ -15,9 +16,9 @@ class BooleanStringTest extends BooleanTestCase
         $this->assertTrue($fromNativeBooleanString->sameValueAs($constructedBooleanString));
     }
 
-    /** @expectedException \ValueObjects\Exception\InvalidNativeArgumentException */
     public function testInvalidNativeArgument()
     {
+        $this->expectException(InvalidNativeArgumentException::class);
         new BooleanString('enabled');
     }
 

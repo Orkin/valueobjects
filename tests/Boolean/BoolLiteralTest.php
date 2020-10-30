@@ -4,6 +4,7 @@ namespace ValueObjects\Tests\Boolean;
 
 use ValueObjects\Boolean\BooleanString;
 use ValueObjects\Boolean\BoolLiteral;
+use ValueObjects\ValueObjectInterface;
 
 class BoolLiteralTest extends BooleanTestCase
 {
@@ -44,14 +45,8 @@ class BoolLiteralTest extends BooleanTestCase
         $this->assertTrue($boolLiteral2->sameValueAs($boolLiteral1));
         $this->assertFalse($boolLiteral1->sameValueAs($boolLiteral3));
 
-        $mock = $this->getMock('ValueObjects\ValueObjectInterface');
+        $mock = $this->createMock(ValueObjectInterface::class);
         $this->assertFalse($boolLiteral1->sameValueAs($mock));
-    }
-
-    /** @expectedException \ValueObjects\Exception\InvalidNativeArgumentException */
-    public function testInvalidNativeArgument()
-    {
-        new BoolLiteral(1);
     }
 
     public function testToString()

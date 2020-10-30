@@ -2,15 +2,17 @@
 
 namespace ValueObjects\Tests\Geography;
 
+use BadMethodCallException;
 use ValueObjects\Geography\Street;
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Tests\TestCase;
+use ValueObjects\ValueObjectInterface;
 
 class StreetTest extends TestCase
 {
-    protected $street;
+    protected Street $street;
 
-    public function setup()
+    public function setup(): void
     {
         $this->street = new Street(new StringLiteral('Abbey Rd'), new StringLiteral('3'), new StringLiteral('Building A'), new StringLiteral('%number% %name%, %elements%'));
     }
@@ -21,9 +23,9 @@ class StreetTest extends TestCase
         $this->assertTrue($this->street->sameValueAs($fromNativeStreet));
     }
 
-    /** @expectedException \BadMethodCallException */
     public function testInvalidFromNative()
     {
+        $this->expectException(BadMethodCallException::class);
         Street::fromNative('Abbey Rd');
     }
 
@@ -36,7 +38,7 @@ class StreetTest extends TestCase
         $this->assertTrue($street2->sameValueAs($this->street));
         $this->assertFalse($this->street->sameValueAs($street3));
 
-        $mock = $this->getMock('ValueObjects\ValueObjectInterface');
+        $mock = $this->createMock(ValueObjectInterface::class);
         $this->assertFalse($this->street->sameValueAs($mock));
     }
 

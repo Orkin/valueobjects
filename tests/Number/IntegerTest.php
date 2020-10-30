@@ -2,9 +2,10 @@
 
 namespace ValueObjects\Tests\Number;
 
-use ValueObjects\Tests\TestCase;
 use ValueObjects\Number\Integer;
 use ValueObjects\Number\Real;
+use ValueObjects\Tests\TestCase;
+use ValueObjects\ValueObjectInterface;
 
 class IntegerTest extends TestCase
 {
@@ -24,7 +25,7 @@ class IntegerTest extends TestCase
         $this->assertTrue($integer2->sameValueAs($integer1));
         $this->assertFalse($integer1->sameValueAs($integer3));
 
-        $mock = $this->getMock('ValueObjects\ValueObjectInterface');
+        $mock = $this->createMock(ValueObjectInterface::class);
         $this->assertFalse($integer1->sameValueAs($mock));
     }
 
@@ -32,15 +33,6 @@ class IntegerTest extends TestCase
     {
         $integer = new Integer(87);
         $this->assertSame('87', $integer->__toString());
-    }
-
-    /**
-     * @expectedException ValueObjects\Exception\InvalidNativeArgumentException
-     * @expectedExceptionMessage Argument "23.4" is invalid. Allowed types for argument are "int".
-     */
-    public function testInvalidNativeArgument()
-    {
-        new Integer(23.4);
     }
 
     public function testZeroToString()

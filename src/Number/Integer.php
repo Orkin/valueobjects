@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\Number;
 
-use ValueObjects\Exception\InvalidNativeArgumentException;
 use ValueObjects\Util\Util;
 use ValueObjects\ValueObjectInterface;
+use function intval;
 
 class Integer extends Real
 {
@@ -13,24 +15,19 @@ class Integer extends Real
      *
      * @param int $value
      */
-    public function __construct($value)
+    public function __construct(int $value)
     {
-        $filteredValue = filter_var($value, FILTER_VALIDATE_INT);
-
-        if (false === $filteredValue) {
-            throw new InvalidNativeArgumentException($value, array('int'));
-        }
-
-        parent::__construct($filteredValue);
+        parent::__construct($value);
     }
 
     /**
      * Tells whether two Integer are equal by comparing their values
      *
-     * @param  ValueObjectInterface $integer
+     * @param ValueObjectInterface $integer
+     *
      * @return bool
      */
-    public function sameValueAs(ValueObjectInterface $integer)
+    public function sameValueAs(ValueObjectInterface $integer): bool
     {
         if (false === Util::classEquals($this, $integer)) {
             return false;
@@ -48,7 +45,7 @@ class Integer extends Real
     {
         $value = parent::toNative();
 
-        return \intval($value);
+        return intval($value);
     }
 
     /**
@@ -56,11 +53,8 @@ class Integer extends Real
      *
      * @return Real
      */
-    public function toReal()
+    public function toReal(): Real
     {
-        $value = $this->toNative();
-        $real  = new Real($value);
-
-        return $real;
+        return new Real($this->toNative());
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ValueObjects\DateTime;
 
 use ValueObjects\DateTime\Exception\InvalidTimeZoneException;
@@ -9,8 +11,7 @@ use ValueObjects\ValueObjectInterface;
 
 class TimeZone implements ValueObjectInterface
 {
-    /** @var StringLiteral */
-    protected $name;
+    protected StringLiteral $name;
 
     /**
      * Returns a new Time object from native timezone name
@@ -18,7 +19,7 @@ class TimeZone implements ValueObjectInterface
      * @param  string $name
      * @return self
      */
-    public static function fromNative()
+    public static function fromNative(): self
     {
         $args = func_get_args();
 
@@ -33,7 +34,7 @@ class TimeZone implements ValueObjectInterface
      * @param  \DateTimeZone $timezone
      * @return self
      */
-    public static function fromNativeDateTimeZone(\DateTimeZone $timezone)
+    public static function fromNativeDateTimeZone(\DateTimeZone $timezone): self
     {
         return static::fromNative($timezone->getName());
     }
@@ -43,7 +44,7 @@ class TimeZone implements ValueObjectInterface
      *
      * @return self
      */
-    public static function fromDefault()
+    public static function fromDefault(): self
     {
         return new static(new StringLiteral(date_default_timezone_get()));
     }
@@ -68,7 +69,7 @@ class TimeZone implements ValueObjectInterface
      *
      * @return \DateTimeZone
      */
-    public function toNativeDateTimeZone()
+    public function toNativeDateTimeZone(): \DateTimeZone
     {
         return new \DateTimeZone($this->getName()->toNative());
     }
@@ -79,7 +80,7 @@ class TimeZone implements ValueObjectInterface
      * @param  ValueObjectInterface $timezone
      * @return bool
      */
-    public function sameValueAs(ValueObjectInterface $timezone)
+    public function sameValueAs(ValueObjectInterface $timezone): bool
     {
         if (false === Util::classEquals($this, $timezone)) {
             return false;
@@ -93,7 +94,7 @@ class TimeZone implements ValueObjectInterface
      *
      * @return StringLiteral
      */
-    public function getName()
+    public function getName(): StringLiteral
     {
         return clone $this->name;
     }
@@ -103,7 +104,7 @@ class TimeZone implements ValueObjectInterface
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getName()->__toString();
     }
